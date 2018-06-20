@@ -88,7 +88,7 @@ class PrometheusSink(
 
       val metricTimestamp = if (enableTimestamp) Some(s"${System.currentTimeMillis}") else None
 
-      pushGateway.pushAdd(pushRegistry, job, groupingKey.asJava, metricTimestamp.orNull)
+      pushGateway.pushAdd(pushRegistry, job, null, metricTimestamp.orNull)
     }
   }
 
