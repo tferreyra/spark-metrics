@@ -89,13 +89,13 @@ class PrometheusSink(
       val metricTimestamp = if (enableTimestamp) Some(s"${System.currentTimeMillis}") else None
 
       val samples = registry.metricFamilySamples.samples
-      for (item : samples) {
+      for (item <- samples) {
         item.labelNames ++ groupingKey.keys
       }
-      for (item : samples) {
+      for (item <- samples) {
         item.labelValues ++ groupingKey.values
       }
-      
+
       pushGateway.pushAdd(pushRegistry, job, null, metricTimestamp.orNull)
     }
   }
