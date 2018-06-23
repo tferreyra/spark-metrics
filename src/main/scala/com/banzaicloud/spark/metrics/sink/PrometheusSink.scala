@@ -88,12 +88,17 @@ class PrometheusSink(
 
       val metricTimestamp = if (enableTimestamp) Some(s"${System.currentTimeMillis}") else None
 
-      val samples = registry.metricFamilySamples.samples
-      for (item <- samples) {
-        item.labelNames ++ groupingKey.keys
-      }
-      for (item <- samples) {
-        item.labelValues ++ groupingKey.values
+      val metricFamilySamples = pushRegistry.metricFamilySamples
+      while (metricFamilySamples.hasMoreElements) {
+        val jList = metricFamilySamples.nextElement.samples //java.util.List[io.prometheus.client.Collector.MetricFamilySamples.Sample]
+        //val samples = asScalaBufferConverter(jList).toArray
+        val samples = jList.asScala
+        for (item <- samples) {
+          item.labelNames.asScala ++ groupingKey.keys
+        }
+        for (item <- samples) {
+          item.labelValues.asScala ++ groupingKey.values
+        }
       }
 
       pushGateway.pushAdd(pushRegistry, job, null, metricTimestamp.orNull)
