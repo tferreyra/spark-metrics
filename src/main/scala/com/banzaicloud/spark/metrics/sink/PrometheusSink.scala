@@ -88,18 +88,25 @@ class PrometheusSink(
 
       val metricTimestamp = if (enableTimestamp) Some(s"${System.currentTimeMillis}") else None
 
-      val metricFamilySamples = pushRegistry.metricFamilySamples
-      while (metricFamilySamples.hasMoreElements) {
-        val jList = metricFamilySamples.nextElement.samples //java.util.List[io.prometheus.client.Collector.MetricFamilySamples.Sample]
-        //val samples = asScalaBufferConverter(jList).toArray
-        val samples = jList.asScala
-        for (item <- samples) {
-          item.labelNames.asScala ++ groupingKey.keys
-        }
-        for (item <- samples) {
-          item.labelValues.asScala ++ groupingKey.values
-        }
-      }
+      // val metricFamilySamples = pushRegistry.metricFamilySamples
+      // logInfo(s"metricFamilySamples: $metricFamilySamples")
+      // while (metricFamilySamples.hasMoreElements) {
+      //   val jList = metricFamilySamples.nextElement.samples //java.util.List[io.prometheus.client.Collector.MetricFamilySamples.Sample]
+      //   //val samples = asScalaBufferConverter(jList).toArray
+      //   logInfo(s"jList: ${jList.toString}")
+      //   val samples = jList.asScala
+      //   logInfo(s"samples: ${samples.toString}")
+      //   for (item <- samples) {
+      //     logInfo(s"item: ${item.toString}")
+      //     item.labelNames.asScala ++ groupingKey.keys
+      //     logInfo(s"item.labelNames: ${item.labelNames.asScala.toString}")
+      //   }
+      //   for (item <- samples) {
+      //     item.labelValues.asScala ++ groupingKey.values
+      //     logInfo(s"item.labelValues: ${item.labelValues.asScala.toString}")
+      //   }
+      // }
+      
 
       pushGateway.pushAdd(pushRegistry, job, null, metricTimestamp.orNull)
     }
